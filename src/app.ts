@@ -26,13 +26,13 @@ export function createApp(corsOrigin: string) {
   app.use(
     "/api/assistant",
     requireAuth,
-    // Names whose conversation each Tripwise Assistant turn belongs to, for Pendo Agent Analytics.
+    // Names the visitor, account and conversation of each Tripwise Assistant turn for Pendo Agent Analytics.
     pendo.middleware((req: Request) => {
-      const { user, account } = (req.res?.locals ?? {}) as Partial<AuthLocals>;
+      const { user } = (req.res?.locals ?? {}) as Partial<AuthLocals>;
       const conversationId: unknown = req.body?.conversationId;
       return {
         visitorId: user?.id, // TODO: map to the visitor id your Pendo web snippet uses
-        accountId: account?.id, // TODO: map to the Pendo account id
+        accountId: user?.accountId, // TODO: map to the Pendo account id
         conversationId: typeof conversationId === "string" ? conversationId : undefined,
       };
     }),
